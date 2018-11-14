@@ -299,6 +299,7 @@ private:
     int _readIndex;
     unsigned long transferSize;             //bytes to send in each CORBA transfer if there is not a timeout
     bounded_buffer_deque_based< std::vector<char> *> workQueue2;
+    bool notifyOnSRIKeywordChange;
     int _writeIndex;
 
     ///////////

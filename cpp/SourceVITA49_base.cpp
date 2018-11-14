@@ -1,27 +1,4 @@
-/*
- * This file is protected by Copyright. Please refer to the COPYRIGHT file
- * distributed with this source distribution.
- *
- * This file is part of REDHAWK core.
- *
- * REDHAWK core is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as published by the
- * Free Software Foundation, either version 3 of the License, or (at your
- * option) any later version.
- *
- * REDHAWK core is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License
- * for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program.  If not, see http://www.gnu.org/licenses/.
-
- * This is the component code. This file contains the child class where
- * custom functionality can be added to the component. Custom
- * functionality to the base class can be extended here. Access to
- * the ports can also be done from this class
-*/
+#include "SourceVITA49_base.h"
 
 /*******************************************************************************************
 
@@ -33,45 +10,52 @@
 
 ******************************************************************************************/
 
-#include "SourceVITA49_base.h"
-
 SourceVITA49_base::SourceVITA49_base(const char *uuid, const char *label) :
-    Resource_impl(uuid, label),
+    Component(uuid, label),
     ThreadedComponent()
 {
+    setThreadName(label);
+
     loadProperties();
 
     dataVITA49_in = new bulkio::InVITA49Port("dataVITA49_in");
+    dataVITA49_in->setLogger(this->_baseLog->getChildLogger("dataVITA49_in", "ports"));
     addPort("dataVITA49_in", dataVITA49_in);
     dataChar_out = new bulkio::OutCharPort("dataChar_out");
+    dataChar_out->setLogger(this->_baseLog->getChildLogger("dataChar_out", "ports"));
     addPort("dataChar_out", dataChar_out);
     dataOctet_out = new bulkio::OutOctetPort("dataOctet_out");
+    dataOctet_out->setLogger(this->_baseLog->getChildLogger("dataOctet_out", "ports"));
     addPort("dataOctet_out", dataOctet_out);
     dataShort_out = new bulkio::OutShortPort("dataShort_out");
+    dataShort_out->setLogger(this->_baseLog->getChildLogger("dataShort_out", "ports"));
     addPort("dataShort_out", dataShort_out);
     dataUshort_out = new bulkio::OutUShortPort("dataUshort_out");
+    dataUshort_out->setLogger(this->_baseLog->getChildLogger("dataUshort_out", "ports"));
     addPort("dataUshort_out", dataUshort_out);
     dataFloat_out = new bulkio::OutFloatPort("dataFloat_out");
+    dataFloat_out->setLogger(this->_baseLog->getChildLogger("dataFloat_out", "ports"));
     addPort("dataFloat_out", dataFloat_out);
     dataDouble_out = new bulkio::OutDoublePort("dataDouble_out");
+    dataDouble_out->setLogger(this->_baseLog->getChildLogger("dataDouble_out", "ports"));
     addPort("dataDouble_out", dataDouble_out);
 }
 
 SourceVITA49_base::~SourceVITA49_base()
 {
-    delete dataVITA49_in;
+    dataVITA49_in->_remove_ref();
     dataVITA49_in = 0;
-    delete dataChar_out;
+    dataChar_out->_remove_ref();
     dataChar_out = 0;
-    delete dataOctet_out;
+    dataOctet_out->_remove_ref();
     dataOctet_out = 0;
-    delete dataShort_out;
+    dataShort_out->_remove_ref();
     dataShort_out = 0;
-    delete dataUshort_out;
+    dataUshort_out->_remove_ref();
     dataUshort_out = 0;
-    delete dataFloat_out;
+    dataFloat_out->_remove_ref();
     dataFloat_out = 0;
-    delete dataDouble_out;
+    dataDouble_out->_remove_ref();
     dataDouble_out = 0;
 }
 
@@ -81,13 +65,13 @@ SourceVITA49_base::~SourceVITA49_base()
 *******************************************************************************************/
 void SourceVITA49_base::start() throw (CORBA::SystemException, CF::Resource::StartError)
 {
-    Resource_impl::start();
+    Component::start();
     ThreadedComponent::startThread();
 }
 
 void SourceVITA49_base::stop() throw (CORBA::SystemException, CF::Resource::StopError)
 {
-    Resource_impl::stop();
+    Component::stop();
     if (!ThreadedComponent::stopThread()) {
         throw CF::Resource::StopError(CF::CF_NOTSET, "Processing thread did not die");
     }
@@ -102,7 +86,7 @@ void SourceVITA49_base::releaseObject() throw (CORBA::SystemException, CF::LifeC
         // TODO - this should probably be logged instead of ignored
     }
 
-    Resource_impl::releaseObject();
+    Component::releaseObject();
 }
 
 void SourceVITA49_base::loadProperties()

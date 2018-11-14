@@ -1,23 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-This file is protected by Copyright. Please refer to the COPYRIGHT file
-distributed with this source distribution.
-
-This file is part of REDHAWK SourceVITA49.
-
-REDHAWK SourceVITA49 is free software: you can redistribute it and/or modify it under
-the terms of the GNU Lesser General Public License as published by the Free
-Software Foundation, either version 3 of the License, or (at your option) any
-later version.
-
-REDHAWK SourceVITA49 is distributed in the hope that it will be useful, but WITHOUT ANY
-WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
-details.
-
-You should have received a copy of the GNU Lesser General Public License along
-with this program.  If not, see http://www.gnu.org/licenses/.
--->
 <!DOCTYPE properties PUBLIC "-//JTRS//DTD SCA V2.2.2 PRF//EN" "properties.dtd">
 <properties>
   <simple id="interface" mode="readwrite" type="string">
@@ -122,7 +103,7 @@ Possible settings only compatiable with VITA49 Spectrum Survey Profile</descript
 
 Rule 6.1.6.2-1: Item Packing Fields shall be arranged in the 32-bit wide payload region either according to link-efficient rules or according to processing-efficient rules. All payloads in an IF Data Packet Stream shall be packed identically.
 
-Rule 6.1.6.2-2: When link-efficient packing is implemented all bits in each 32-bit word shall be used for the packing of Item Packing Fields. The only exception is the last 32-bit payload word, which may be only partially filled. Each consecutive Item Packing Field shall reside immediately to the right of the previous one. When the remaining bits in a 32-bit word are fewer than the size of an Item Packing Field, the left-most bits of the next Item Packing Field shall be loaded into the available bit positions. The remaining portion of such an Item Packing Field shall occupy the left-most positions of the next 32-bit word. In this way, Item Packing Fields shall "wrap" from one
+Rule 6.1.6.2-2: When link-efficient packing is implemented all bits in each 32-bit word shall be used for the packing of Item Packing Fields. The only exception is the last 32-bit payload word, which may be only partially filled. Each consecutive Item Packing Field shall reside immediately to the right of the previous one. When the remaining bits in a 32-bit word are fewer than the size of an Item Packing Field, the left-most bits of the next Item Packing Field shall be loaded into the available bit positions. The remaining portion of such an Item Packing Field shall occupy the left-most positions of the next 32-bit word. In this way, Item Packing Fields shall &quot;wrap&quot; from one
 32-bit word to the next.
 </description>
       <value>true</value>
@@ -167,7 +148,7 @@ Rule 6.1.6.2-2: When link-efficient packing is implemented all bits in each 32-b
       <action type="external"/>
     </simple>
     <simple id="VITA49Processing_override::repeating" mode="readwrite" name="repeating" type="ulong">
-      <description>Rule 6.1.6.3-6: When Sample-Component Repeating is used with complex Cartesian Data Samples, the number of "I" Data Items specified by the Repeat Count parameter shall be packed into sequential Item Packing Fields with earlier Data Items going into lower-numbered Item Packing Fields. This shall be followed by the corresponding "Q" Data Items similarly arranged. The Repeat Count shall range from one to 65,536 with a value of one indicating that Sample-Component Repeating is not in use.
+      <description>Rule 6.1.6.3-6: When Sample-Component Repeating is used with complex Cartesian Data Samples, the number of &quot;I&quot; Data Items specified by the Repeat Count parameter shall be packed into sequential Item Packing Fields with earlier Data Items going into lower-numbered Item Packing Fields. This shall be followed by the corresponding &quot;Q&quot; Data Items similarly arranged. The Repeat Count shall range from one to 65,536 with a value of one indicating that Sample-Component Repeating is not in use.
 </description>
       <value>1</value>
       <units>number of times the packet may repeat</units>
@@ -224,6 +205,12 @@ Rule 6.1.6.2-2: When link-efficient packing is implemented all bits in each 32-b
       <description>This is the number of bytes to be received from the socket. Default is for an MTU of 1500. </description>
       <value>1500</value>
       <units>bytes</units>
+      <kind kindtype="configure"/>
+      <action type="external"/>
+    </simple>
+    <simple id="notify_on_sri_keyword_change" mode="readwrite" type="boolean">
+      <description>If set to false, refrain from notifying downstream components that the SRI has changed if any keywords change. </description>
+      <value>true</value>
       <kind kindtype="configure"/>
       <action type="external"/>
     </simple>

@@ -1,25 +1,6 @@
-#
-# This file is protected by Copyright. Please refer to the COPYRIGHT file
-# distributed with this source distribution.
-#
-# This file is part of REDHAWK.
-#
-# REDHAWK is free software: you can redistribute it and/or modify it
-# under the terms of the GNU Lesser General Public License as published by the
-# Free Software Foundation, either version 3 of the License, or (at your
-# option) any later version.
-#
-# REDHAWK is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License
-# for more details.
-#
-# You should have received a copy of the GNU Lesser General Public License
-# along with this program.  If not, see http://www.gnu.org/licenses/.
-#
 # By default, the RPM will install to the standard REDHAWK SDR root location (/var/redhawk/sdr)
 # You can override this at install time using --prefix /new/sdr/root when invoking rpm (preferred method, if you must)
-%{!?_sdrroot: %define _sdrroot /var/redhawk/sdr}
+%{!?_sdrroot: %global _sdrroot /var/redhawk/sdr}
 %define _prefix %{_sdrroot}
 Prefix:         %{_prefix}
 
@@ -31,7 +12,7 @@ Prefix:         %{_prefix}
 
 Name:           rh.SourceVITA49
 Version:        3.1.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Component %{name}
 
 Group:          REDHAWK/Components
@@ -39,20 +20,18 @@ License:        LGPLv3+
 Source0:        %{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:  redhawk-devel >= 2.0
-Requires:       redhawk >= 2.0
+BuildRequires:  redhawk-devel >= 2.2
+Requires:       redhawk >= 2.2
 
-# Shared library requirements
 BuildRequires:  rh.VITA49-devel >= 4.0
 Requires:       rh.VITA49 >= 4.0
 
 # Interface requirements
-BuildRequires:  bulkioInterfaces >= 2.0
-Requires:       bulkioInterfaces >= 2.0
+BuildRequires:  bulkioInterfaces >= 2.2
+Requires:       bulkioInterfaces >= 2.2
 
 # Allow upgrades from previous package name
 Obsoletes:      SourceVITA49 < 3.0.0
-
 
 %description
 Component %{name}
@@ -89,7 +68,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,redhawk,redhawk,-)
-%dir %{_prefix}/dom/components/rh/SourceVITA49
+%dir %{_sdrroot}/dom/components/rh
+%dir %{_sdrroot}/dom/components/rh/SourceVITA49
 %{_prefix}/dom/components/rh/SourceVITA49/SourceVITA49.scd.xml
 %{_prefix}/dom/components/rh/SourceVITA49/SourceVITA49.prf.xml
 %{_prefix}/dom/components/rh/SourceVITA49/SourceVITA49.spd.xml

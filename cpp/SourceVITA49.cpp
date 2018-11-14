@@ -113,6 +113,7 @@ void SourceVITA49_i::initialize_values() {
     getTimeStamp = true;
 
     setDefaultSRI();
+    notifyOnSRIKeywordChange = this->advanced_configuration.notify_on_sri_keyword_change;
 
     number_of_bytes = 0;
     _writeIndex = 0;
@@ -395,7 +396,7 @@ void SourceVITA49_i::RECEIVER_M() {
 
                     LOG_DEBUG(SourceVITA49_i, "Threw away context packet");
                 } else {
-                    LOG_DEBUG(SourceVITA49_i, "Threw away borked packet, type: " << basicVRTPacket->getPacketType());
+                    LOG_DEBUG(SourceVITA49_i, "Throwing away borked packet, type: " << basicVRTPacket->getPacketType());
                     recv(multi_client.sock, vrl_vrt_header.data(), vrl_vrt_header.size(), 0);
                 }
             } else {
@@ -418,7 +419,7 @@ void SourceVITA49_i::RECEIVER_M() {
 
                     LOG_DEBUG(SourceVITA49_i, "Threw away context packet");
                 } else {
-                    LOG_DEBUG(SourceVITA49_i, "Threw away borked packet, type: " << basicVRTPacket->getPacketType());
+                    LOG_DEBUG(SourceVITA49_i, "Throwing away borked packet, type: " << basicVRTPacket->getPacketType());
                     recv(multi_client.sock, vrt_header.data(), vrt_header.size(), 0);
                 }
             }
@@ -525,7 +526,8 @@ void SourceVITA49_i::RECEIVER_TCP() {
 
                     LOG_DEBUG(SourceVITA49_i, "Threw away context packet");
                 } else {
-                    LOG_DEBUG(SourceVITA49_i, "Threw away borked packet, type: " << basicVRTPacket->getPacketType());
+                    LOG_DEBUG(SourceVITA49_i, "Throwing away borked packet, type: " << basicVRTPacket->getPacketType());
+                    std::vector<char> throwAway(basicVRTPacket->getPacketLength());
                     recv(tcp_client.sock, throwAway.data(), throwAway.size(), 0);
                 }
             } else {
@@ -549,7 +551,8 @@ void SourceVITA49_i::RECEIVER_TCP() {
 
                     LOG_DEBUG(SourceVITA49_i, "Threw away context packet");
                 } else {
-                    LOG_DEBUG(SourceVITA49_i, "Threw away borked packet, type: " << basicVRTPacket->getPacketType());
+                    LOG_DEBUG(SourceVITA49_i, "Throwing away borked packet, type: " << basicVRTPacket->getPacketType());
+                    std::vector<char> throwAway(basicVRTPacket->getPacketLength());
                     recv(tcp_client.sock, throwAway.data(), throwAway.size(), 0);
                 }
             }
@@ -897,11 +900,13 @@ bool SourceVITA49_i::compareSRI(BULKIO::StreamSRI A, BULKIO::StreamSRI B) {
         return same;
     }
 
-    for (unsigned int i = 0; i < A.keywords.length(); i++) {
-        std::string action = "ne";
-        if (ossie::compare_anys(A.keywords[i].value, B.keywords[i].value, action)) {
-            same = false;
-            return same;
+    if (notifyOnSRIKeywordChange) {
+        for (unsigned int i = 0; i < A.keywords.length(); i++) {
+            std::string action = "ne";
+            if (ossie::compare_anys(A.keywords[i].value, B.keywords[i].value, action)) {
+                same = false;
+                return same;
+            }
         }
     }
 
