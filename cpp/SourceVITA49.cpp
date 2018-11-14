@@ -266,7 +266,11 @@ void SourceVITA49_i::RECEIVER() {
                     recv(uni_client.sock, vrl_vrt_header.data(), vrl_vrt_header.size(), 0);
 
                     LOG_DEBUG(SourceVITA49_i, "Threw away context packet");
+                } else {
+                   LOG_DEBUG(SourceVITA49_i, "Throwing away borked packet, type: " << basicVRTPacket->getPacketType());
+                   recv(uni_client.sock, vrl_vrt_header.data(), vrl_vrt_header.size(), 0);
                 }
+
             } else {
                 std::vector<char> vrt_header(BasicVRTPacket::MAX_HEADER_LENGTH);
 
@@ -286,6 +290,9 @@ void SourceVITA49_i::RECEIVER() {
                     recv(uni_client.sock, vrt_header.data(), vrt_header.size(), 0);
 
                     LOG_DEBUG(SourceVITA49_i, "Threw away context packet");
+                } else {
+                    LOG_DEBUG(SourceVITA49_i, "Throwing away borked packet, type: " << basicVRTPacket->getPacketType());
+                    recv(uni_client.sock, vrt_header.data(), vrt_header.size(), 0);
                 }
             }
         } else {
@@ -387,6 +394,9 @@ void SourceVITA49_i::RECEIVER_M() {
                     recv(multi_client.sock, vrl_vrt_header.data(), vrl_vrt_header.size(), 0);
 
                     LOG_DEBUG(SourceVITA49_i, "Threw away context packet");
+                } else {
+                    LOG_DEBUG(SourceVITA49_i, "Threw away borked packet, type: " << basicVRTPacket->getPacketType());
+                    recv(multi_client.sock, vrl_vrt_header.data(), vrl_vrt_header.size(), 0);
                 }
             } else {
                 std::vector<char> vrt_header(BasicVRTPacket::MAX_HEADER_LENGTH);
@@ -407,6 +417,9 @@ void SourceVITA49_i::RECEIVER_M() {
                     recv(multi_client.sock, vrt_header.data(), vrt_header.size(), 0);
 
                     LOG_DEBUG(SourceVITA49_i, "Threw away context packet");
+                } else {
+                    LOG_DEBUG(SourceVITA49_i, "Threw away borked packet, type: " << basicVRTPacket->getPacketType());
+                    recv(multi_client.sock, vrt_header.data(), vrt_header.size(), 0);
                 }
             }
         } else {
@@ -511,6 +524,9 @@ void SourceVITA49_i::RECEIVER_TCP() {
                     recv(tcp_client.sock, throwAway.data(), throwAway.size(), 0);
 
                     LOG_DEBUG(SourceVITA49_i, "Threw away context packet");
+                } else {
+                    LOG_DEBUG(SourceVITA49_i, "Threw away borked packet, type: " << basicVRTPacket->getPacketType());
+                    recv(tcp_client.sock, throwAway.data(), throwAway.size(), 0);
                 }
             } else {
                 std::vector<char> vrt_header(BasicVRTPacket::MAX_HEADER_LENGTH);
@@ -532,6 +548,9 @@ void SourceVITA49_i::RECEIVER_TCP() {
                     recv(tcp_client.sock, throwAway.data(), throwAway.size(), 0);
 
                     LOG_DEBUG(SourceVITA49_i, "Threw away context packet");
+                } else {
+                    LOG_DEBUG(SourceVITA49_i, "Threw away borked packet, type: " << basicVRTPacket->getPacketType());
+                    recv(tcp_client.sock, throwAway.data(), throwAway.size(), 0);
                 }
             }
         } else {
@@ -1513,12 +1532,12 @@ void SourceVITA49_i::process_context(std::vector<char> *packet) {
             addModifyKeyword<int64_t>(&outputSRI, "OVER_RANGE_SUM", CORBA::Long(contextPacket_g->getOverRangeCount()));
             LOG_DEBUG(SourceVITA49_i, "OVER_RANGE_SUM: " << contextPacket_g->getOverRangeCount());
         }
+    }
 
-        if (!isNull(contextPacket_g->getSampleRate())) {
-            outputSRI.xdelta = 1.0 / contextPacket_g->getSampleRate();
-            inputSampleRate = contextPacket_g->getSampleRate();
-            LOG_DEBUG(SourceVITA49_i, "Sample Rate: " << contextPacket_g->getSampleRate());
-        }
+    if (!isNull(contextPacket_g->getSampleRate())) {
+        outputSRI.xdelta = 1.0 / contextPacket_g->getSampleRate();
+        inputSampleRate = contextPacket_g->getSampleRate();
+        LOG_DEBUG(SourceVITA49_i, "Sample Rate: " << contextPacket_g->getSampleRate());
     }
 
     if (!isNull(contextPacket_g->getTimeStampAdjustment())) {
