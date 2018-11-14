@@ -1677,6 +1677,12 @@ void SourceVITA49_i::process_context(std::vector<char> *packet) {
         }
     }
 
+    if (processingPayloadFormat.getRealComplexType() == RealComplexType_ComplexCartesian) {
+        outputSRI.mode = currSRI.mode = 1;
+    } else {
+        outputSRI.mode = currSRI.mode = 0;
+    }
+
     if (!isNull(contextPacket_g->getGeolocationINS())) {
         LOG_DEBUG(SourceVITA49_i, " The GEO INS info exists");
         Geolocation Temp = contextPacket_g->getGeolocationINS();
