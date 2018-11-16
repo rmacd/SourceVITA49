@@ -202,18 +202,25 @@ Rule 6.1.6.2-2: When link-efficient packing is implemented all bits in each 32-b
       <action type="external"/>
     </simple>
     <simple id="vita49_packet_size" mode="readwrite" type="ulong">
-      <description>This is the number of bytes to be received from the socket. Default is for an MTU of 1500. </description>
+      <description>This is the number of bytes to be received from the socket. Default is for an MTU of 1500.</description>
       <value>1500</value>
       <units>bytes</units>
       <kind kindtype="configure"/>
       <action type="external"/>
     </simple>
     <simple id="notify_on_sri_keyword_change" mode="readwrite" type="boolean">
-      <description>If set to false, refrain from notifying downstream components that the SRI has changed if any keywords change. </description>
+      <description>If set to false, refrain from notifying downstream components that the SRI has changed if any keywords change.</description>
       <value>true</value>
       <kind kindtype="configure"/>
       <action type="external"/>
     </simple>
+    <simple id="ignore_stream_id_changes" mode="readwrite" type="boolean">
+      <description>If set to true, stream ID changes are not pushed downstream.</description>
+      <value>false</value>
+      <kind kindtype="configure"/>
+      <action type="external"/>
+    </simple>
+    
     <configurationkind kindtype="configure"/>
   </struct>
 </properties>

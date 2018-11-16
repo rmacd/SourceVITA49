@@ -114,6 +114,7 @@ void SourceVITA49_i::initialize_values() {
 
     setDefaultSRI();
     notifyOnSRIKeywordChange = this->advanced_configuration.notify_on_sri_keyword_change;
+    ignoreStreamIDChanges = this->advanced_configuration.ignore_stream_id_changes;
 
     number_of_bytes = 0;
     _writeIndex = 0;
@@ -604,6 +605,15 @@ void SourceVITA49_i::advancedConfigurationChanged(const advanced_configuration_s
         advanced_configuration.corba_transfersize = oldVal->corba_transfersize;
     }
 
+    if (newVal->notify_on_sri_keyword_change != notifyOnSRIKeywordChange) {
+        notifyOnSRIKeywordChange = newVal->notify_on_sri_keyword_change;
+        LOG_INFO(SourceVITA49_i, "Updated notification preference, notify downstream if keywords change: " << notifyOnSRIKeywordChange);
+    }
+    if (newVal->ignore_stream_id_changes != ignoreStreamIDChanges) {
+        ignoreStreamIDChanges = newVal->ignore_stream_id_changes;
+        LOG_INFO(SourceVITA49_i, "Updated stream ID notification preference, notify downstream if stream ID changes: " << ignoreStreamIDChanges);
+    }
+
     int temp = int (std::ceil(advanced_configuration.buffer_size / packetSize));
     int packetSize_l = packetSize;
 
@@ -892,8 +902,14 @@ bool SourceVITA49_i::compareSRI(BULKIO::StreamSRI A, BULKIO::StreamSRI B) {
 
     if ((A.hversion == B.hversion) and (A.xstart == B.xstart)
             and (A.xunits == B.xunits) and (A.ystart == B.ystart)
-            and (A.ydelta == B.ydelta) and
-            (!strcmp(A.streamID, B.streamID))) {
+            and (A.ydelta == B.ydelta)) {
+        same = true;
+    } else {
+        same = false;
+        return same;
+    }
+
+    if (!strcmp(A.streamID, B.streamID) || ignoreStreamIDChanges) {
         same = true;
     } else {
         same = false;
@@ -1441,7 +1457,7 @@ void SourceVITA49_i::process_context(std::vector<char> *packet) {
 
     rebase_pointer_context(packet);
 
-    if (!isNull(contextPacket_g->getStreamID()) && streamID.empty()) {
+    if (!isNull(contextPacket_g->getStreamID()) && (streamID.empty() || isNull(streamID))) {
         streamID = contextPacket_g->getStreamID();
     }
 

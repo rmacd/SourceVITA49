@@ -345,6 +345,7 @@ struct advanced_configuration_struct {
         poll_in_time = 100;
         vita49_packet_size = 1500;
         notify_on_sri_keyword_change = true;
+        ignore_stream_id_changes = false;
     }
 
     static std::string getId() {
@@ -352,7 +353,7 @@ struct advanced_configuration_struct {
     }
 
     static const char* getFormat() {
-        return "iIIIb";
+        return "iIIIbb";
     }
 
     CORBA::Long buffer_size;
@@ -360,6 +361,7 @@ struct advanced_configuration_struct {
     CORBA::ULong poll_in_time;
     CORBA::ULong vita49_packet_size;
     bool notify_on_sri_keyword_change;
+    bool ignore_stream_id_changes;
 };
 
 inline bool operator>>= (const CORBA::Any& a, advanced_configuration_struct& s) {
@@ -381,6 +383,9 @@ inline bool operator>>= (const CORBA::Any& a, advanced_configuration_struct& s) 
     if (props.contains("notify_on_sri_keyword_change")) {
         if (!(props["notify_on_sri_keyword_change"] >>= s.notify_on_sri_keyword_change)) return false;
     }
+    if (props.contains("ignore_stream_id_changes")) {
+        if (!(props["ignore_stream_id_changes"] >>= s.ignore_stream_id_changes)) return false;
+    }
     return true;
 }
 
@@ -396,6 +401,8 @@ inline void operator<<= (CORBA::Any& a, const advanced_configuration_struct& s) 
     props["vita49_packet_size"] = s.vita49_packet_size;
  
     props["notify_on_sri_keyword_change"] = s.notify_on_sri_keyword_change;
+ 
+    props["ignore_stream_id_changes"] = s.ignore_stream_id_changes;
     a <<= props;
 }
 
@@ -409,6 +416,8 @@ inline bool operator== (const advanced_configuration_struct& s1, const advanced_
     if (s1.vita49_packet_size!=s2.vita49_packet_size)
         return false;
     if (s1.notify_on_sri_keyword_change!=s2.notify_on_sri_keyword_change)
+        return false;
+    if (s1.ignore_stream_id_changes!=s2.ignore_stream_id_changes)
         return false;
     return true;
 }
